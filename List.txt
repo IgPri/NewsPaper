@@ -1,0 +1,99 @@
+
+1) Создаём Юзера.
+us1 = User.objects.create_user(username='Jo Fast')
+us2 = User.objects.create_user(username='Peter Slowly')
+
+2)Создаём два объекта модели Author
+Author.objects.create(authorUser=us1)
+Author.objects.create(authorUser=us2)
+
+3)Добавляем 4 категории в модель Category.
+Category.objects.create(name='Politics')
+Category.objects.create(name='Economics')
+Category.objects.create(name='Sport')
+Category.objects.create(name='IT')
+
+4)Добавляем 2 статьи и 1 новость
+(создали автора)
+author = Author.objects.get(id=1)
+author2 = Author.objects.get(id=2)
+
+(Создание поста)
+Post.objects.create(author=author, categoryType='NW', title='sometitle', text='somebigtext')
+
+(получить пост)
+Post.objects.get(id=1)
+
+(получить title)
+Post.objects.get(id=1).title
+
+5)Присвоение категории статье или новости
+Post.objects.get(id=1).postCategory.add(Category.objects.get(id=1))
+Post.objects.get(id=2).postCategory.add(Category.objects.get(id=2))
+Post.objects.get(id=3).postCategory.add(Category.objects.get(id=3))
+
+6)Создание комментария
+Comment.objects.create(commentPost=Post.objects.get(id=1), commentUser=Author.objects.get(id=1).authorUser, text='anytextbyaythor')
+
+7) Создание Like и Dislike
+Comment.objects.get(id=1).like()
+Проверка рейтинга
+Comment.objects.get(id=1).rating
+
+dislike
+Comment.objects.get(id=1).dislike()
+
+8) Рейтинг
+Author.objects.get(id=1)
+присваеваем переменную a
+a = Author.objects.get(id=1)
+a.update_rating()
+проверка рейтинга
+a.ratingAuthor
+
+Author.objects.get(id=2)
+присваеваем переменную b
+b = Author.objects.get(id=2)
+b.update_rating()
+проверка рейтинга
+b.ratingAuthor
+
+9) Автор с наибольшим рейтингом
+c = Author.objects.order_by('-ratingAuthor')[:1]
+
+for i in c:
+    i.ratingAuthor
+    i.authorUser.username
+
+либо так
+
+best = Author.objects.all().order_by('-ratingAuthor').values('authorUser', 'ratingAuthor')[0]
+print(best)
+
+10)Вывести дату добавления, username автора, рейтинг, заголовок и превью лучшей статьи, основываясь на лайках/дислайках к этой статье.
+Post.objects.all().order_by('-rating').values('dateCreation', 'author__authorUser__username', 'rating', 'title')[0]
+bestpost = Post.objects.order_by('-rating')[:1]
+Post.objects.get(id=bestpost).preview()
+
+11) Вывести все комментарии (дата, пользователь, рейтинг, текст) к этой статье
+allcomm = Comment.objects.all().values('dateCreation', 'commentUser', 'rating', 'text')
+print(allcomm)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
